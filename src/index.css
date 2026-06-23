@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-bg text-text-primary font-sans antialiased;
+    background-color: #222222;
+  }
+  /* Títulos en grotesque; el resto del cuerpo queda en monospace (estética FACTTIC) */
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+  code, pre {
+    @apply font-mono;
+  }
+}
+
+@layer utilities {
+  .glow-accent {
+    box-shadow: 0 0 40px rgba(255, 82, 41, 0.15), 0 0 80px rgba(255, 82, 41, 0.05);
+  }
+  .text-glow {
+    text-shadow: 0 0 30px rgba(255, 82, 41, 0.5);
+  }
+  .backdrop-card {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+/* Hide decorative/nav elements during PDF export */
+body.pdf-exporting nav[aria-hidden],
+body.pdf-exporting nav,
+body.pdf-exporting .pdf-ignore {
+  display: none !important;
+}
+body.pdf-exporting [class*="fixed"] {
+  display: none !important;
+}
+/* Collapse forced viewport heights + trim vertical padding for compact PDF */
+body.pdf-exporting .min-h-screen {
+  min-height: 0 !important;
+}
+body.pdf-exporting section {
+  padding-top: 40px !important;
+  padding-bottom: 40px !important;
+}
+
+/* Cover gets a full A4-aspect hero page — taller container, bigger type, more air */
+body.pdf-exporting #cover {
+  min-height: 1760px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 80px !important;
+}
+body.pdf-exporting #cover > * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+body.pdf-exporting #cover h1 {
+  font-size: 120px !important;
+  line-height: 1.08 !important;
+}
+body.pdf-exporting #cover img {
+  height: 80px !important;
+}
+body.pdf-exporting #cover .text-sm,
+body.pdf-exporting #cover .text-xs,
+body.pdf-exporting #cover .text-base {
+  font-size: 22px !important;
+}
+body.pdf-exporting #cover .pdf-only img {
+  height: 80px !important;
+}
+
+/* Light mode override for PDF export — more printable */
+body.pdf-exporting {
+  background-color: #ffffff !important;
+}
+body.pdf-exporting .bg-bg { background-color: #ffffff !important; }
+body.pdf-exporting .bg-surface { background-color: #f6f6f6 !important; }
+body.pdf-exporting .bg-surface-elevated { background-color: #fafafa !important; }
+body.pdf-exporting .bg-accent-glow { background-color: rgba(255, 82, 41, 0.1) !important; }
+body.pdf-exporting .text-text-primary { color: #18181b !important; }
+body.pdf-exporting .text-text-secondary { color: #3f3f46 !important; }
+body.pdf-exporting .text-text-muted { color: #52525b !important; }
+body.pdf-exporting .text-accent { color: #e0431c !important; }
+body.pdf-exporting .text-success { color: #2c8a8f !important; }
+body.pdf-exporting .border-border { border-color: #d4d4d8 !important; }
+body.pdf-exporting .border-border-accent { border-color: rgba(255, 82, 41, 0.5) !important; }
+body.pdf-exporting .bg-accent { background-color: #e0431c !important; color: #ffffff !important; }
+/* Dots/icons using bg-bg inside accent pills should stay dark */
+body.pdf-exporting .bg-accent .bg-bg,
+body.pdf-exporting .bg-accent .text-bg {
+  background-color: #ffffff !important;
+  color: #ffffff !important;
+}
+body.pdf-exporting .text-bg { color: #18181b !important; }
+/* Logo swap: show dark variant in PDF, white in web */
+.pdf-only { display: none !important; }
+body.pdf-exporting .web-only { display: none !important; }
+body.pdf-exporting .pdf-only { display: inline-block !important; }
+/* Code blocks stay dark so syntax highlighting reads */
+body.pdf-exporting pre {
+  background-color: #2a2a2a !important;
+  color: #e5e5e5 !important;
+  border-color: #3a3a3a !important;
+}
+body.pdf-exporting pre .text-text-secondary { color: #c8c8c8 !important; }
+body.pdf-exporting pre .text-accent { color: #ff6f4a !important; }
+body.pdf-exporting pre + div,
+body.pdf-exporting .rounded-2xl:has(> pre) { border-color: #3a3a3a !important; }
+/* html2canvas clips text with wide letter-spacing — tighten it during export */
+body.pdf-exporting .tracking-widest { letter-spacing: 0.04em !important; }
+body.pdf-exporting .tracking-wider { letter-spacing: 0.02em !important; }
