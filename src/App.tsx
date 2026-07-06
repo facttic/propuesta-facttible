@@ -2,6 +2,8 @@ import { useRef, useState } from 'react'
 import type { ProposalContent } from './types'
 import PasswordGate from './components/PasswordGate'
 import Background from './components/Background'
+import Reveal from './components/Reveal'
+import ThemeToggle from './components/ThemeToggle'
 import SectionNav from './components/SectionNav'
 import Footer from './components/Footer'
 import BrzaCover from './sections/brza/BrzaCover'
@@ -12,16 +14,20 @@ import BrzaImplementation from './sections/brza/BrzaImplementation'
 import BrzaPricing from './sections/brza/BrzaPricing'
 import BrzaProposal from './sections/brza/BrzaProposal'
 import BrzaWhatsNext from './sections/brza/BrzaWhatsNext'
-import ProcessFlow from './sections/brza/ProcessFlow'
-import AiFlow from './sections/brza/AiFlow'
+import Intro from './sections/brza/Intro'
+import StepsFlow from './sections/brza/StepsFlow'
+import Roadmap from './sections/brza/Roadmap'
 
 // La nav y el PDF se arman dinámicamente según qué secciones traiga el contenido.
 function buildSections(content: ProposalContent) {
   const all: { id: string; label: string; present: boolean }[] = [
     { id: 'cover', label: 'Portada', present: true },
+    { id: 'intro', label: 'Quiénes somos', present: !!content.intro },
     { id: 'greeting', label: 'Contexto', present: true },
+    { id: 'flow', label: 'El proceso', present: !!content.flow },
     { id: 'process', label: 'Proceso actual', present: !!content.processFlow },
     { id: 'ai', label: 'Con IA', present: !!content.aiFlow },
+    { id: 'roadmap', label: 'Plan e inversión', present: !!content.roadmap },
     { id: 'overview', label: 'Objetivo', present: !!content.overview },
     { id: 'scope', label: 'Alcance', present: !!content.scope },
     { id: 'implementation', label: 'Implementación', present: !!content.implementation },
@@ -83,6 +89,10 @@ export default function App() {
 
       for (const el of sectionEls) {
         const isCover = el.id === 'cover'
+        // Medidas de los bloques que no deben cortarse entre páginas. Se toman dentro
+        // del clon (ya con estilos de impresión), para que coincidan con el canvas.
+        let atomicBottomsCss: number[] = []
+        let sectionCssH = 0
         const canvas = await html2canvas(el, {
           backgroundColor: '#ffffff',
           scale: SCALE,
@@ -115,6 +125,16 @@ export default function App() {
               .inline-flex { white-space: nowrap; }
             `
             clonedDoc.head.appendChild(style)
+
+            // medir los bloques atómicos ya con los estilos de impresión aplicados
+            const clonedSection = clonedDoc.getElementById(el.id)
+            if (clonedSection) {
+              const secRect = clonedSection.getBoundingClientRect()
+              sectionCssH = secRect.height
+              atomicBottomsCss = Array.from(clonedSection.querySelectorAll<HTMLElement>('[data-pdf-atomic]'))
+                .map((n) => n.getBoundingClientRect().bottom - secRect.top)
+                .sort((a, b) => a - b)
+            }
           },
         })
         const ratio = contentW / canvas.width
@@ -159,18 +179,38 @@ export default function App() {
             cursorY = MARGIN
           }
           const pxPerPage = Math.floor(contentH / ratio)
+          // puntos de corte permitidos = bordes inferiores de los bloques atómicos (en px de canvas)
+          const pxScale = sectionCssH > 0 ? canvas.height / sectionCssH : SCALE
+          const cuts = Array.from(
+            new Set(
+              atomicBottomsCss
+                .map((b) => Math.round(b * pxScale))
+                .filter((y) => y > 0 && y < canvas.height),
+            ),
+          ).sort((a, b) => a - b)
+          cuts.push(canvas.height)
           let yOffset = 0
+          let firstSlice = true
           while (yOffset < canvas.height) {
-            const sliceH = Math.min(pxPerPage, canvas.height - yOffset)
+            const maxCut = yOffset + pxPerPage
+            // el borde de bloque más bajo que entra en la página; si ninguno entra
+            // (un bloque más alto que una página), se corta duro al límite de página.
+            let cut = -1
+            for (const cand of cuts) {
+              if (cand > yOffset && cand <= maxCut) cut = cand
+            }
+            if (cut < 0) cut = Math.min(maxCut, canvas.height)
+            const sliceH = cut - yOffset
             const sliceImgData = sliceCanvasToJpeg(canvas, yOffset, sliceH)
             const sliceHeightPt = sliceH * ratio
-            if (yOffset > 0) {
+            if (!firstSlice) {
               pdf.addPage()
               cursorY = MARGIN
             }
+            firstSlice = false
             pdf.addImage(sliceImgData, 'JPEG', MARGIN, cursorY, contentW, sliceHeightPt)
             cursorY += sliceHeightPt
-            yOffset += sliceH
+            yOffset = cut
           }
           placedAny = true
         }
@@ -189,6 +229,7 @@ export default function App() {
     return (
       <>
         <Background />
+        <ThemeToggle />
         <PasswordGate onUnlock={handleUnlock} />
       </>
     )
@@ -199,19 +240,21 @@ export default function App() {
       <div className="pdf-ignore">
         <Background />
       </div>
+      <ThemeToggle />
       <SectionNav sectionIds={buildSections(content)} />
       <BrzaCover c={content.cover} />
-      <BrzaGreeting c={content.greeting} />
-      {content.processFlow && <ProcessFlow c={content.processFlow} />}
-      {content.aiFlow && <AiFlow c={content.aiFlow} />}
-      {content.overview && <BrzaOverview c={content.overview} />}
-      {content.scope && <BrzaScope c={content.scope} />}
-      {content.implementation && <BrzaImplementation c={content.implementation} />}
-      {content.pricing && <BrzaPricing c={content.pricing} />}
+      {content.intro && <Reveal><Intro c={content.intro} /></Reveal>}
+      <Reveal><BrzaGreeting c={content.greeting} /></Reveal>
+      {content.flow && <StepsFlow c={content.flow} />}
+      {content.roadmap && <Roadmap c={content.roadmap} inv={content.investment} />}
+      {content.overview && <Reveal><BrzaOverview c={content.overview} /></Reveal>}
+      {content.scope && <Reveal><BrzaScope c={content.scope} /></Reveal>}
+      {content.implementation && <Reveal><BrzaImplementation c={content.implementation} /></Reveal>}
+      {content.pricing && <Reveal><BrzaPricing c={content.pricing} /></Reveal>}
       {content.proposal && content.pricing && (
-        <BrzaProposal c={content.proposal} pricing={content.pricing} />
+        <Reveal><BrzaProposal c={content.proposal} pricing={content.pricing} /></Reveal>
       )}
-      <BrzaWhatsNext c={content.whatsNext} onDownloadPdf={handleDownloadPdf} generating={generating} />
+      <Reveal><BrzaWhatsNext c={content.whatsNext} onDownloadPdf={handleDownloadPdf} generating={generating} /></Reveal>
       <Footer />
     </div>
   )

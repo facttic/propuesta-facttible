@@ -2,14 +2,29 @@ type Props = {
   className?: string
 }
 
+// Los assets viven en public/. La versión negra (texto negro, arcoíris intacto)
+// se muestra en modo claro y en el PDF; la blanca, en modo oscuro.
+const base = import.meta.env.BASE_URL
+
 /**
- * Wordmark FACT[TIC]: tipografía de marca (Space Grotesk) con los corchetes en
- * el naranja de FACTTIC. Texto puro: escala nítida y se exporta bien a PDF.
+ * Logo oficial de FACTTIC (imagen). La altura sigue el font-size del contenedor
+ * (h-[1em]), así respeta los tamaños que se venían usando con el wordmark de texto.
  */
 export default function Logo({ className = '' }: Props) {
   return (
-    <span className={`font-display font-bold tracking-tight leading-none ${className}`}>
-      FACT<span className="text-accent">[</span>TIC<span className="text-accent">]</span>
+    <span className={`inline-flex items-center leading-none ${className}`}>
+      <img
+        src={`${base}facttic-logo.png`}
+        alt="FACTTIC"
+        className="logo-on-dark h-[1em] w-auto select-none"
+        draggable={false}
+      />
+      <img
+        src={`${base}facttic-logo-black.png`}
+        alt="FACTTIC"
+        className="logo-on-light h-[1em] w-auto select-none"
+        draggable={false}
+      />
     </span>
   )
 }

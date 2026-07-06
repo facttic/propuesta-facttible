@@ -25,11 +25,6 @@ export default function BrzaCover({ c }: { c: BrzaContent['cover'] }) {
 
       <div className="mt-10 flex flex-col items-center gap-2 text-text-secondary">
         <Logo className="text-2xl md:text-3xl text-text-primary" />
-        {c.preparedBy && (
-          <span className="font-mono text-xs tracking-widest uppercase text-text-muted">
-            {c.preparedBy}
-          </span>
-        )}
       </div>
 
       <div className="mt-12 flex items-center gap-4 text-[11px] font-mono tracking-widest uppercase text-text-muted">

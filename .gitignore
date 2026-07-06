@@ -13,3 +13,6 @@ dist
 # Recovery reference (local only)
 .recover-reference
 gls.tar.gz
+
+# PDFs generados (contienen la propuesta en claro) — nunca commitear
+*.pdf

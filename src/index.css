@@ -2,13 +2,247 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Tokens de tema ──────────────────────────────────────────────
+   Oscuro por defecto (marca FACTTIC). El tema claro se activa con la
+   clase .light en <html>. Los tokens sólidos usados con opacidad van
+   por canales RGB; los translúcidos, como valor completo. */
+:root {
+  --c-bg: #222222;
+  --c-surface: rgba(255, 255, 255, 0.035);
+  --c-surface-elevated: rgba(255, 255, 255, 0.06);
+  --c-accent-glow: rgba(255, 82, 41, 0.12);
+  --c-border: rgba(255, 255, 255, 0.12);
+  --c-secondary: 87 195 200;
+  --c-text-primary: 242 242 242;
+  --c-text-secondary: 184 184 184;
+  --c-text-muted: 138 138 138;
+  --c-bg-dot: rgba(255, 255, 255, 0.04);
+  --c-bg-vignette: rgba(0, 0, 0, 0.28);
+  color-scheme: dark;
+}
+:root.light {
+  --c-bg: #f3f1ee;
+  --c-surface: #ffffff;
+  --c-surface-elevated: #eceae4;
+  --c-accent-glow: rgba(255, 82, 41, 0.09);
+  --c-border: rgba(0, 0, 0, 0.12);
+  --c-secondary: 44 138 143;
+  --c-text-primary: 28 25 23;
+  --c-text-secondary: 68 64 60;
+  --c-text-muted: 120 113 108;
+  --c-bg-dot: rgba(0, 0, 0, 0.045);
+  --c-bg-vignette: rgba(0, 0, 0, 0.05);
+  color-scheme: light;
+}
+
+/* Logo FACTTIC: blanco en modo oscuro; negro en modo claro y en el PDF */
+.logo-on-light { display: none; }
+:root.light .logo-on-dark { display: none; }
+:root.light .logo-on-light { display: inline-block; }
+body.pdf-exporting .logo-on-dark { display: none !important; }
+body.pdf-exporting .logo-on-light { display: inline-block !important; }
+
+/* Scroll reveal: fade + slide-up al entrar en viewport */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+/* Al exportar el PDF, todo visible sí o sí */
+.pdf-exporting .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Embudo de convergencia: la flecha rellena "cae" suavemente con easing */
+@keyframes converge-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+.converge-arrow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: converge-bob 1.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .converge-arrow { animation: none; }
+}
+/* En el PDF, la flecha quieta */
+.pdf-exporting .converge-arrow { animation: none !important; }
+
+/* Carpeta del resultado: las hojas "pasan" una tras otra (riffle) */
+@keyframes page-riffle {
+  0%, 12% { transform: scaleY(1); }
+  36% { transform: scaleY(0.04); }
+  42% { transform: scaleY(0.04); }
+  66%, 100% { transform: scaleY(1); }
+}
+.riffle-leaf {
+  transform-box: fill-box;
+  transform-origin: top center;
+  animation: page-riffle 2.1s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .riffle-leaf { animation: none; }
+}
+.pdf-exporting .riffle-leaf { animation: none !important; }
+
+/* Etapas manuales: la persona "tipea" — las manos suben y bajan alternadas */
+@keyframes type-tap {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(2px); }
+}
+.type-hand-l { animation: type-tap 0.62s ease-in-out infinite; }
+.type-hand-r { animation: type-tap 0.62s ease-in-out infinite; animation-delay: 0.31s; }
+@media (prefers-reduced-motion: reduce) {
+  .type-hand-l, .type-hand-r { animation: none; }
+}
+.pdf-exporting .type-hand-l,
+.pdf-exporting .type-hand-r { animation: none !important; }
+
+/* Radar: el barrido gira y el blip pulsa */
+@keyframes radar-sweep { to { transform: rotate(360deg); } }
+@keyframes radar-blip { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+.radar-sweep {
+  transform-box: view-box;
+  transform-origin: 60px 60px;
+  animation: radar-sweep 3.2s linear infinite;
+}
+.radar-blip { animation: radar-blip 1.5s ease-in-out infinite; }
+/* Memoria: la pila flota suavemente */
+@keyframes memory-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.memory-stack {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: memory-float 3s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .radar-sweep, .radar-blip, .memory-stack { animation: none; }
+}
+.pdf-exporting .radar-sweep,
+.pdf-exporting .radar-blip,
+.pdf-exporting .memory-stack { animation: none !important; }
+
+/* Enchufe del módulo de IA: halo eléctrico con parpadeo sutil */
+@keyframes plug-flicker {
+  0%, 46%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+  54% { opacity: 1; }
+  70% { opacity: 0.82; }
+  74% { opacity: 1; }
+}
+.plug-glow {
+  filter: drop-shadow(0 0 4px currentColor) drop-shadow(0 0 9px currentColor);
+  animation: plug-flicker 3.2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .plug-glow { animation: none; }
+}
+.pdf-exporting .plug-glow { animation: none !important; filter: none !important; }
+
+/* El enchufe: en reposo está "desconectado" (levantado y apagado); cuando la card
+   se centra en el slider, baja y se enchufa en la toma, encendiendo el halo. */
+.plug-body {
+  transform: translateY(-16px);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+}
+.plug-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+@keyframes spark-pop {
+  0% { opacity: 0; transform: scale(0.4); }
+  60% { opacity: 1; transform: scale(1.15); }
+  100% { opacity: 0.9; transform: scale(1); }
+}
+.step-slide.is-centered .plug-body {
+  transform: translateY(0);
+  filter: drop-shadow(0 0 3px currentColor) drop-shadow(0 0 7px currentColor);
+  animation: plug-flicker 3.2s 0.5s ease-in-out infinite;
+}
+.step-slide.is-centered .plug-spark {
+  animation: spark-pop 0.5s 0.4s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .plug-body { transition: none; transform: none; }
+  .step-slide.is-centered .plug-body { animation: none; }
+  .plug-spark, .step-slide.is-centered .plug-spark { animation: none; opacity: 0.9; }
+}
+/* En el PDF (pila vertical, sin slider) el enchufe se muestra conectado y quieto. */
+.pdf-exporting .plug-body { transform: none !important; animation: none !important; filter: none !important; }
+.pdf-exporting .plug-spark { opacity: 0.9 !important; animation: none !important; }
+
+/* El módulo de IA "prende" (glow) recién cuando la card se centra y se enchufa. */
+.ai-module-glow {
+  box-shadow: 0 0 0 0 transparent;
+  transition: box-shadow 0.5s ease;
+}
+.step-slide.is-centered .ai-module-glow {
+  box-shadow: 0 0 46px -4px var(--glow, transparent), 0 0 16px -4px var(--glow, transparent);
+  transition-delay: 0.2s;
+}
+.pdf-exporting .ai-module-glow { box-shadow: none !important; }
+
+/* Entregable del Discovery: el sparkle de valor titila con un glow suave. */
+@keyframes value-sparkle {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.14); opacity: 1; }
+}
+.value-sparkle {
+  transform-box: fill-box;
+  transform-origin: center;
+  filter: drop-shadow(0 0 5px rgba(255, 82, 41, 0.5));
+  animation: value-sparkle 2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .value-sparkle { animation: none; }
+}
+.pdf-exporting .value-sparkle { animation: none !important; }
+
+/* Pista "deslizá para ver más": las flechas se mueven suavemente en horizontal. */
+@keyframes slide-hint-nudge {
+  0%, 100% { transform: translateX(-2px); }
+  50% { transform: translateX(3px); }
+}
+.slide-hint { animation: slide-hint-nudge 1.05s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .slide-hint { animation: none; }
+}
+
+/* Proceso relevado: slider horizontal en pantalla, pila vertical en el PDF */
+.pdf-steps {
+  display: none;
+}
+body.pdf-exporting .pdf-steps {
+  display: block !important;
+}
+body.pdf-exporting .steps-slider-web {
+  display: none !important;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
   body {
     @apply bg-bg text-text-primary font-sans antialiased;
-    background-color: #222222;
+    background-color: var(--c-bg);
+    transition: background-color 0.3s ease;
   }
   /* Títulos en grotesque; el resto del cuerpo queda en monospace (estética FACTTIC) */
   h1, h2, h3, h4 {

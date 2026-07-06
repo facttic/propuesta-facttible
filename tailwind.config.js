@@ -4,21 +4,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        // FACTTIC: fondo carbón, acento naranja, secundario teal
-        bg: '#222222',
-        surface: 'rgba(255, 255, 255, 0.035)',
-        'surface-elevated': 'rgba(255, 255, 255, 0.06)',
+        // FACTTIC: fondo carbón, acento naranja, secundario teal.
+        // Los tokens que cambian entre tema claro/oscuro se resuelven por variables CSS
+        // (ver index.css). Los que se usan con modificador de opacidad (/15, /50, …) van
+        // por canales `rgb(var(--x) / <alpha-value>)` para que Tailwind pueda componer el alfa.
+        bg: 'var(--c-bg)',
+        surface: 'var(--c-surface)',
+        'surface-elevated': 'var(--c-surface-elevated)',
         accent: '#ff5229',
         'accent-bright': '#ff6f4a',
-        'accent-glow': 'rgba(255, 82, 41, 0.12)',
+        'accent-glow': 'var(--c-accent-glow)',
         'accent-dim': 'rgba(255, 82, 41, 0.4)',
-        secondary: '#57c3c8',
+        secondary: 'rgb(var(--c-secondary) / <alpha-value>)',
         'secondary-glow': 'rgba(87, 195, 200, 0.12)',
-        success: '#57c3c8',
-        'text-primary': '#f2f2f2',
-        'text-secondary': '#b8b8b8',
-        'text-muted': '#8a8a8a',
-        border: 'rgba(255, 255, 255, 0.12)',
+        success: 'rgb(var(--c-secondary) / <alpha-value>)',
+        'text-primary': 'rgb(var(--c-text-primary) / <alpha-value>)',
+        'text-secondary': 'rgb(var(--c-text-secondary) / <alpha-value>)',
+        'text-muted': 'rgb(var(--c-text-muted) / <alpha-value>)',
+        border: 'var(--c-border)',
         'border-accent': 'rgba(255, 82, 41, 0.45)',
         // paleta secundaria de marca (ilustraciones / acentos puntuales)
         'brand-lila': '#d6bbf2',
