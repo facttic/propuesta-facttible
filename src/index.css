@@ -243,6 +243,8 @@ body.pdf-exporting .steps-slider-web {
     @apply bg-bg text-text-primary font-sans antialiased;
     background-color: var(--c-bg);
     transition: background-color 0.3s ease;
+    /* nada de scroll horizontal accidental en mobile (clip no rompe fixed/sticky) */
+    overflow-x: clip;
   }
   /* Títulos en grotesque; el resto del cuerpo queda en monospace (estética FACTTIC) */
   h1, h2, h3, h4 {

@@ -36,15 +36,20 @@ function DocList({ docs }: { docs: NonNullable<FlowItem['docs']> }) {
           return (
             <div
               key={name}
-              className={`group relative flex items-start gap-1.5 rounded-md border border-border px-2 py-1.5 font-mono text-[10px] text-text-secondary leading-snug transition ${
-                note ? 'cursor-help hover:border-border-accent hover:bg-accent/[0.04]' : ''
+              tabIndex={note ? 0 : undefined}
+              className={`group relative flex items-start gap-1.5 rounded-md border border-border px-2 py-1.5 font-mono text-[10px] text-text-secondary leading-snug transition outline-none ${
+                note
+                  ? 'cursor-help hover:border-border-accent hover:bg-accent/[0.04] focus-visible:border-border-accent focus-visible:bg-accent/[0.04]'
+                  : ''
               }`}
             >
               <Icon name="file-text" size={11} className="text-secondary shrink-0 mt-0.5" />
               <span className="break-words flex-1">{name}</span>
-              {note && <Icon name="info" size={11} className="text-text-muted shrink-0 mt-0.5 group-hover:text-accent" />}
               {note && (
-                <div className="pointer-events-none absolute left-0 right-0 bottom-full z-20 mb-1.5 hidden group-hover:block rounded-lg border border-border-accent bg-bg p-2.5 font-sans text-[11px] leading-relaxed text-text-secondary shadow-xl">
+                <Icon name="info" size={11} className="text-text-muted shrink-0 mt-0.5 group-hover:text-accent group-focus-within:text-accent" />
+              )}
+              {note && (
+                <div className="pointer-events-none absolute left-0 right-0 bottom-full z-20 mb-1.5 hidden group-hover:block group-focus-within:block rounded-lg border border-border-accent bg-bg p-2.5 font-sans text-[11px] leading-relaxed text-text-secondary shadow-xl">
                   {note}
                 </div>
               )}
@@ -241,6 +246,7 @@ function StepsSlider({ slides, hint }: { slides: ReactNode[]; hint?: string }) {
     draggable = Draggable.create(row, {
       type: 'x',
       inertia: true,
+      allowNativeTouchScrolling: true, // en mobile: arrastre horizontal sin bloquear el scroll vertical
       bounds: { minX: 0, maxX: 0 },
       edgeResistance: 0.9,
       dragResistance: 0.05,
