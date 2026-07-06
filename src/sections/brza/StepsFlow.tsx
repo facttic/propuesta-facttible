@@ -222,21 +222,9 @@ function StepsSlider({ slides, hint }: { slides: ReactNode[]; hint?: string }) {
     const connect = (idx: number) => slides.forEach((el, i) => el.classList.toggle('is-centered', i === idx))
     const settle = (delay = 0.14) => {
       syncIndex()
-      setViewH(indexRef.current, true)
       connectCall?.kill()
       disconnect()
       connectCall = gsap.delayedCall(delay, () => connect(indexRef.current))
-    }
-
-    // el viewport "abraza" la altura de la card activa (evita huecos en cards cortas,
-    // sobre todo en mobile donde se ve una sola). PAD = py-4 arriba y abajo del row.
-    const PAD = 32
-    const setViewH = (idx: number, animate: boolean) => {
-      const card = inners[idx]
-      if (!card) return
-      const h = card.offsetHeight + PAD
-      if (animate) gsap.to(view, { height: h, duration: 0.45, ease: 'power2.inOut' })
-      else gsap.set(view, { height: h })
     }
 
     // deja lugar para que la primera y la última tarjeta puedan centrarse
@@ -249,7 +237,6 @@ function StepsSlider({ slides, hint }: { slides: ReactNode[]; hint?: string }) {
       gsap.set(row, { x: gsap.utils.clamp(minX, 0, -indexRef.current * step) })
       draggable?.applyBounds({ minX, maxX: 0 })
       coverflow()
-      setViewH(indexRef.current, false)
     }
 
     const syncIndex = () => {
@@ -287,7 +274,6 @@ function StepsSlider({ slides, hint }: { slides: ReactNode[]; hint?: string }) {
         indexRef.current = clampIdx(indexRef.current + d)
         connectCall?.kill()
         disconnect()
-        setViewH(indexRef.current, true)
         gsap.to(row, {
           x: -indexRef.current * step,
           duration: 0.5,
@@ -321,7 +307,7 @@ function StepsSlider({ slides, hint }: { slides: ReactNode[]; hint?: string }) {
           maskImage: 'linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent)',
         }}
       >
-        <div ref={rowRef} className="flex items-start py-4">
+        <div ref={rowRef} className="flex items-center py-4">
           {slides.map((node, i) => (
             <div key={i} className="step-slide shrink-0 w-[86vw] sm:w-[540px] lg:w-[640px] px-3">
               <div className="step-slide-inner h-full will-change-transform">{node}</div>
