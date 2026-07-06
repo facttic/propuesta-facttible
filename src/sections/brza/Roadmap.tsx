@@ -8,12 +8,6 @@ type Props = {
   inv?: BrzaContent['investment']
 }
 
-// "Simple · alto valor" → { main: "Simple", sub: "alto valor" }
-function splitAxis(s?: string) {
-  const parts = (s ?? '').split('·')
-  return { main: (parts[0] ?? '').trim(), sub: parts.slice(1).join('·').trim() }
-}
-
 const EFFORT = { baja: { level: 1, word: 'Baja' }, media: { level: 2, word: 'Media' }, alta: { level: 3, word: 'Alta' } }
 const VALUE = { medio: { level: 2, word: 'Medio' }, alto: { level: 3, word: 'Alto' } }
 
@@ -85,37 +79,7 @@ export default function Roadmap({ c, inv }: Props) {
       <h2 className="mt-8 text-3xl md:text-5xl font-bold text-text-primary">{c.title}</h2>
       <p className="mt-6 text-lg text-text-secondary leading-relaxed">{c.subtitle}</p>
 
-      {/* eje simple → complejo */}
-      {(c.axisFrom || c.axisTo) && (
-        <div className="mt-12 flex items-center gap-4 md:gap-6">
-          <div className="text-left leading-tight shrink-0">
-            <div className="font-mono text-sm md:text-base font-bold tracking-widest uppercase text-secondary">
-              {splitAxis(c.axisFrom).main}
-            </div>
-            {splitAxis(c.axisFrom).sub && (
-              <div className="font-mono text-[10px] tracking-wider uppercase text-text-muted">
-                {splitAxis(c.axisFrom).sub}
-              </div>
-            )}
-          </div>
-          <div className="relative flex-1 h-2 rounded-full bg-gradient-to-r from-secondary/70 via-secondary/25 to-accent/80">
-            <span className="absolute -left-1 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-secondary ring-4 ring-secondary/20" />
-            <span className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-0 h-0 border-y-[8px] border-y-transparent border-l-[13px] border-l-accent" />
-          </div>
-          <div className="text-right leading-tight shrink-0">
-            <div className="font-mono text-sm md:text-base font-bold tracking-widest uppercase text-accent">
-              {splitAxis(c.axisTo).main}
-            </div>
-            {splitAxis(c.axisTo).sub && (
-              <div className="font-mono text-[10px] tracking-wider uppercase text-text-muted">
-                {splitAxis(c.axisTo).sub}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div className="mt-8 space-y-4">
+      <div className="mt-10 space-y-4">
         {c.phases.map((p, i) => {
           const priced = p.status === 'priced'
           return (
@@ -129,7 +93,7 @@ export default function Roadmap({ c, inv }: Props) {
                     <span className="flex-1 h-px bg-border" />
                   </div>
                   <p className="mt-2 text-sm text-text-muted leading-relaxed">
-                    División tentativa del trabajo futuro. Su alcance, plazos y costo se definen concretamente al finalizar el Discovery.
+                    División tentativa del trabajo futuro. Su alcance, plazos y costo se definen concretamente al finalizar la preingeniería.
                   </p>
                 </div>
               )}
@@ -160,7 +124,7 @@ export default function Roadmap({ c, inv }: Props) {
                     </div>
                   ) : (
                     <div className="mt-1 inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 font-mono text-[10px] tracking-widest uppercase text-text-muted">
-                      A estimar tras el Discovery
+                      A estimar tras la preingeniería
                     </div>
                   )}
                 </div>
@@ -180,22 +144,6 @@ export default function Roadmap({ c, inv }: Props) {
               {p.focus && (
                 <p className="mt-4 md:pl-8 text-sm md:text-base text-text-secondary leading-relaxed">{p.focus}</p>
               )}
-
-              <div className="mt-5 flex flex-wrap gap-2 md:pl-8">
-                {p.capabilities.map((cap) => (
-                  <span
-                    key={cap}
-                    className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 font-mono text-[11px] ${
-                      priced
-                        ? 'border border-border-accent bg-surface text-text-secondary'
-                        : 'border border-border bg-surface-elevated text-text-secondary'
-                    }`}
-                  >
-                    <span className="text-accent/70" aria-hidden>+</span>
-                    {cap}
-                  </span>
-                ))}
-              </div>
               </div>
               </Reveal>
             </Fragment>
@@ -286,8 +234,8 @@ export default function Roadmap({ c, inv }: Props) {
           {/* total */}
           <div data-pdf-atomic className="mt-6 rounded-2xl border border-border-accent bg-accent-glow px-6 md:px-8 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <div className="font-mono text-[11px] font-bold tracking-widest text-accent">INVERSIÓN — DISCOVERY</div>
-              <div className="mt-1 text-sm text-text-secondary">Precio cerrado; el resto se estima al finalizar el Discovery.</div>
+              <div className="font-mono text-[11px] font-bold tracking-widest text-accent">INVERSIÓN — PREINGENIERÍA</div>
+              <div className="mt-1 text-sm text-text-secondary">Precio cerrado; el resto se estima al finalizar la preingeniería.</div>
             </div>
             <div className="text-3xl md:text-4xl font-bold text-text-primary font-display">{inv.total}</div>
           </div>

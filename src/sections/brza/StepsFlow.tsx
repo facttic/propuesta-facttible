@@ -872,14 +872,14 @@ export default function StepsFlow({ c }: Props) {
         <p className="mt-4 text-lg text-text-secondary leading-relaxed">
           Presentamos nuevamente el proceso, indicando en qué etapas el software y la inteligencia artificial
           pueden aportar valor. Cada oportunidad se clasifica según su naturaleza para precisar su alcance.
-          Se trata de ideas preliminares, a validar y priorizar durante el Discovery.
+          Se trata de ideas preliminares, a validar y priorizar durante la preingeniería.
         </p>
 
         {/* leyenda de tipos de solución */}
         <div className="mt-6 flex flex-wrap gap-x-5 gap-y-1.5 font-mono text-[10px] text-text-muted">
           <span><span className="font-bold text-secondary">Software</span> · automatización determinística: reglas, cálculos, integraciones</span>
           <span><span className="font-bold text-accent">IA</span> · modelos que asisten; siempre se validan</span>
-          <span><span className="font-bold text-text-muted">A definir</span> · a explorar y confirmar en el Discovery</span>
+          <span><span className="font-bold text-text-muted">A definir</span> · a explorar y confirmar en la preingeniería</span>
         </div>
 
         {/* pantalla: slider con radar (primero), las 17 etapas y la memoria (último) */}
