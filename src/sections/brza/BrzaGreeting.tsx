@@ -1,4 +1,18 @@
+import { Fragment } from 'react'
 import type { BrzaContent } from '../../types'
+
+// Resalta en negrita los tramos marcados con **...** en el texto.
+function withBold(text: string) {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+    part.startsWith('**') && part.endsWith('**') ? (
+      <strong key={i} className="font-bold text-text-primary">
+        {part.slice(2, -2)}
+      </strong>
+    ) : (
+      <Fragment key={i}>{part}</Fragment>
+    ),
+  )
+}
 
 export default function BrzaGreeting({ c }: { c: BrzaContent['greeting'] }) {
   return (
@@ -13,7 +27,7 @@ export default function BrzaGreeting({ c }: { c: BrzaContent['greeting'] }) {
       <div className="mt-8 space-y-5">
         {c.paragraphs.map((paragraph, index) => (
           <p key={index} className="text-lg md:text-2xl text-text-secondary leading-relaxed">
-            {paragraph}
+            {withBold(paragraph)}
           </p>
         ))}
       </div>
