@@ -856,6 +856,9 @@ export default function StepsFlow({ c }: Props) {
               </div>
             ))}
           </div>
+          {c.converge.note && (
+            <p className="mt-4 font-mono text-[10px] tracking-wider text-text-muted leading-relaxed">{c.converge.note}</p>
+          )}
         </div>
       </Reveal>
 

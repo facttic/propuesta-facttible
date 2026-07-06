@@ -82,7 +82,7 @@ export type BrzaContent = {
     preAi?: AiCard[] // mejoras transversales antes del flujo (radar)
     nodes: FlowNode[]
     postAi?: AiCard[] // mejoras transversales (memoria de ofertas)
-    converge: { label: string; title: string; stats: { value: string; label: string }[] }
+    converge: { label: string; title: string; note?: string; stats: { value: string; label: string }[] }
   }
   // (legacy) Proceso actual: flujo vertical por fases que converge en la oferta
   processFlow?: {
