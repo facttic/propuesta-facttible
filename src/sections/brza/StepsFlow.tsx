@@ -307,7 +307,7 @@ function StepsSlider({ slides, hint }: { slides: ReactNode[]; hint?: string }) {
           maskImage: 'linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent)',
         }}
       >
-        <div ref={rowRef} className="flex items-center py-4">
+        <div ref={rowRef} className="flex items-center lg:items-stretch py-4">
           {slides.map((node, i) => (
             <div key={i} className="step-slide shrink-0 w-[86vw] sm:w-[540px] lg:w-[640px] px-3">
               <div className="step-slide-inner h-full will-change-transform">{node}</div>
