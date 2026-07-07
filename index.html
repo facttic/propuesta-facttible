@@ -4,13 +4,16 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <script>
-      // Fija el tema antes del render para evitar parpadeo. Oscuro por defecto.
+      // Fija el tema antes del render para evitar parpadeo. Claro por defecto;
+      // solo queda oscuro si el usuario lo eligió explícitamente.
       (function () {
         try {
-          if (localStorage.getItem('theme') === 'light') {
+          if (localStorage.getItem('theme') !== 'dark') {
             document.documentElement.classList.add('light')
           }
-        } catch (e) {}
+        } catch (e) {
+          document.documentElement.classList.add('light')
+        }
       })()
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
