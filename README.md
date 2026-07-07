@@ -16,7 +16,7 @@ Space Mono. Tema claro por defecto, con toggle a oscuro.
 ## Cómo funciona
 
 - Cada propuesta vive en un archivo **plano** `content.<slug>.json` (por ejemplo
-  `content.kioshi.json`). Ese archivo **nunca se commitea** — está en `.gitignore`.
+  `content.acme.json`). Ese archivo **nunca se commitea** — está en `.gitignore`.
 - El comando `encrypt` lo cifra con **AES-256-GCM** (clave derivada de la contraseña con
   PBKDF2, 600k iteraciones) y genera `public/content.<slug>.enc.json`. **Ese sí se
   commitea**: es texto ilegible sin la contraseña.
@@ -58,7 +58,7 @@ qué propuesta abrir.
 
 ## Crear una propuesta nueva
 
-1. Elegí un **slug** corto en minúsculas (letras, números y guiones): `kioshi`,
+1. Elegí un **slug** corto en minúsculas (letras, números y guiones): `acme`,
    `cliente-x`, etc.
 2. Creá `content.<slug>.json` con el contenido. La estructura del template está tipada en
    [`src/types.ts`](src/types.ts) → `BrzaContent` (portada, contexto, el proceso, plan e
@@ -98,7 +98,7 @@ https://facttic.github.io/propuesta-facttible/
 Y cada propuesta se abre agregando su slug:
 
 ```
-https://facttic.github.io/propuesta-facttible/?for=kioshi
+https://facttic.github.io/propuesta-facttible/?for=acme
 https://facttic.github.io/propuesta-facttible/?for=cliente-x
 ```
 
