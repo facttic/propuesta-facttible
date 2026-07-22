@@ -216,6 +216,27 @@ export type BrzaContent = {
     cards: { title: string; desc: string }[]
     closing: string
   }
+  // Presupuesto tentativo por etapa (fases 1 a 5): tabla de días/semanas/costo, en rango min-max
+  tentativeBudget?: {
+    badge: string
+    title: string
+    subtitle?: string
+    rows: {
+      phase: string
+      weeksMin: number
+      weeksMax: number
+      costMin: number
+      costMax: number
+    }[]
+    total: {
+      weeksMin: number
+      weeksMax: number
+      monthsLabel: string // "entre 6 y 8 meses"
+      costMin: number
+      costMax: number
+    }
+    notes?: string[]
+  }
   whatsNext: {
     badge: string
     title: string

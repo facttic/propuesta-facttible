@@ -17,6 +17,7 @@ import BrzaWhatsNext from './sections/brza/BrzaWhatsNext'
 import Intro from './sections/brza/Intro'
 import StepsFlow from './sections/brza/StepsFlow'
 import Roadmap from './sections/brza/Roadmap'
+import TentativeBudget from './sections/brza/TentativeBudget'
 
 // La nav y el PDF se arman dinámicamente según qué secciones traiga el contenido.
 function buildSections(content: ProposalContent) {
@@ -33,6 +34,7 @@ function buildSections(content: ProposalContent) {
     { id: 'implementation', label: 'Implementación', present: !!content.implementation },
     { id: 'pricing', label: 'Inversión', present: !!content.pricing },
     { id: 'proposal', label: 'Propuesta', present: !!content.proposal },
+    { id: 'tentative-budget', label: 'Presupuesto por etapa', present: !!content.tentativeBudget },
     { id: 'whats-next', label: 'Siguientes pasos', present: true },
   ]
   return all.filter((s) => s.present).map(({ id, label }) => ({ id, label }))
@@ -254,6 +256,7 @@ export default function App() {
       {content.proposal && content.pricing && (
         <Reveal><BrzaProposal c={content.proposal} pricing={content.pricing} /></Reveal>
       )}
+      {content.tentativeBudget && <Reveal><TentativeBudget c={content.tentativeBudget} /></Reveal>}
       <Reveal><BrzaWhatsNext c={content.whatsNext} onDownloadPdf={handleDownloadPdf} generating={generating} /></Reveal>
       <Footer />
     </div>
